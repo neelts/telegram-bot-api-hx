@@ -1,0 +1,10 @@
+-cp src
+-main TelegramBotAPIExtract
+-neko bin/extract.n
+-cmd neko ./bin/extract.n
+
+--next
+
+-cp src
+-main TelegramBotAPIExtractTest
+-neko bin/test.n
