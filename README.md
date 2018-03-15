@@ -2,7 +2,8 @@
 ## Haxe Telegram Bot API
  - Automatically extracts [Telegram BotAPI](https://core.telegram.org/bots/api)
  - Currenlty provides full type support.
- - String enums in the next update.
+ - String enums and polling in the next update.
+
 ## Example
 ```haxe
 var botAPI:TelegramBotAPI = new TelegramBotAPI(BOT_TOKEN);
