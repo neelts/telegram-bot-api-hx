@@ -3,7 +3,7 @@
 * 	Do not change
 **/
 package;
-import haxe.macro.Expr.ExprOf;
+import haxe.macro.Expr;
 import haxe.macro.Context;
 import haxe.extern.EitherType;
 #if cpp
@@ -30,13 +30,20 @@ class TelegramBotAPI {
 	::foreach methods::public function ::name::(::if (params.length > 0)::params:::paramsName::, ::end::?onComplete:Response<::returns::>->Void):Void call(methodName(), ::if (params.length > 0)::params::else::null::end::, onComplete);
 	::end::
 	private function call<P, T, R:Response<T>>(method:String, params:P = null, onComplete:R -> Void = null):Void {
-		var thread:Thread = Thread.create(callAsync);
 		var message:Call<P, R> = { method:method, params:params, onComplete:onComplete };
+		#if hl
+		thread_create(callAsync.bind(message));
+		#elseif !macro
+		var thread:Thread = Thread.create(callAsync);
 		thread.sendMessage(message);
+		#end
 	}
 
-	private function callAsync<P, T, R:Response<T>>():Void {
-		var message:Call<P, Response<T>> = Thread.readMessage(true);
+	#if (hl || macro)
+	private function callAsync<P, T, R:Response<T>>(message:Call<P, R>):Void {
+	#else
+	private function callAsync<P, T, R:Response<T>>():Void {#end
+		#if (!hl && !macro) var message:Call<P, Response<T>> = Thread.readMessage(true);#end
 		var http:Http = new Http(url + message.method);
 		http.addHeader(CONTENT_TYPE, JSON);
 		if (message.params != null) http.setPostData(Json.stringify(message.params));
@@ -48,6 +55,10 @@ class TelegramBotAPI {
 	macro public static function methodName():ExprOf<String> {
 		return macro $v{Context.getLocalMethod()};
 	}
+
+	#if hl @:hlNative("std","thread_create") static function thread_create( f : Void -> Void ) : hl.Abstract<"hl_thread"> {
+		return null;
+	}#end
 }
 
 typedef Call<P, R> = {

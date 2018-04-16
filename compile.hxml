@@ -8,3 +8,9 @@
 -cp src
 -main TelegramBotAPIExtractTest
 -neko bin/test.n
+
+--next
+
+-cp src
+-main TelegramBotAPIExtractTest
+-hl bin/test.hl
