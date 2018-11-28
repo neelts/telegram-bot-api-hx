@@ -28,7 +28,7 @@ class TelegramBotAPI {
 	public function new(token:String) url = '$URL/$token/';
 
 	public function getUpdates(params:GetUpdatesParams, ?onComplete:Response<Array<Update>>->Void):Void call(methodName(), params, onComplete);
-	public function setWebhook(params:SetWebhookParams, ?onComplete:Response<Void>->Void):Void call(methodName(), params, onComplete);
+	public function setWebhook(params:SetWebhookParams, ?onComplete:Response<Bool>->Void):Void call(methodName(), params, onComplete);
 	public function deleteWebhook(?onComplete:Response<Bool>->Void):Void call(methodName(), null, onComplete);
 	public function getWebhookInfo(?onComplete:Response<WebhookInfo>->Void):Void call(methodName(), null, onComplete);
 	public function getMe(?onComplete:Response<User>->Void):Void call(methodName(), null, onComplete);
@@ -38,6 +38,7 @@ class TelegramBotAPI {
 	public function sendAudio(params:SendAudioParams, ?onComplete:Response<Message>->Void):Void call(methodName(), params, onComplete);
 	public function sendDocument(params:SendDocumentParams, ?onComplete:Response<Message>->Void):Void call(methodName(), params, onComplete);
 	public function sendVideo(params:SendVideoParams, ?onComplete:Response<Message>->Void):Void call(methodName(), params, onComplete);
+	public function sendAnimation(params:SendAnimationParams, ?onComplete:Response<Message>->Void):Void call(methodName(), params, onComplete);
 	public function sendVoice(params:SendVoiceParams, ?onComplete:Response<Message>->Void):Void call(methodName(), params, onComplete);
 	public function sendVideoNote(params:SendVideoNoteParams, ?onComplete:Response<Message>->Void):Void call(methodName(), params, onComplete);
 	public function sendMediaGroup(params:SendMediaGroupParams, ?onComplete:Response<Array<Message>>->Void):Void call(methodName(), params, onComplete);
@@ -70,6 +71,7 @@ class TelegramBotAPI {
 	public function answerCallbackQuery(params:AnswerCallbackQueryParams, ?onComplete:Response<Bool>->Void):Void call(methodName(), params, onComplete);
 	public function editMessageText(params:EditMessageTextParams, ?onComplete:Response<EitherType<Message, Bool>>->Void):Void call(methodName(), params, onComplete);
 	public function editMessageCaption(params:EditMessageCaptionParams, ?onComplete:Response<EitherType<Message, Bool>>->Void):Void call(methodName(), params, onComplete);
+	public function editMessageMedia(params:EditMessageMediaParams, ?onComplete:Response<EitherType<EitherType<Void, Message>, Bool>>->Void):Void call(methodName(), params, onComplete);
 	public function editMessageReplyMarkup(params:EditMessageReplyMarkupParams, ?onComplete:Response<EitherType<Message, Bool>>->Void):Void call(methodName(), params, onComplete);
 	public function deleteMessage(params:DeleteMessageParams, ?onComplete:Response<Bool>->Void):Void call(methodName(), params, onComplete);
 	public function sendSticker(params:SendStickerParams, ?onComplete:Response<Message>->Void):Void call(methodName(), params, onComplete);
@@ -83,6 +85,7 @@ class TelegramBotAPI {
 	public function sendInvoice(params:SendInvoiceParams, ?onComplete:Response<Message>->Void):Void call(methodName(), params, onComplete);
 	public function answerShippingQuery(params:AnswerShippingQueryParams, ?onComplete:Response<Update>->Void):Void call(methodName(), params, onComplete);
 	public function answerPreCheckoutQuery(params:AnswerPreCheckoutQueryParams, ?onComplete:Response<Update>->Void):Void call(methodName(), params, onComplete);
+	public function setPassportDataErrors(params:SetPassportDataErrorsParams, ?onComplete:Response<Bool>->Void):Void call(methodName(), params, onComplete);
 	public function sendGame(params:SendGameParams, ?onComplete:Response<Message>->Void):Void call(methodName(), params, onComplete);
 	public function setGameScore(params:SetGameScoreParams, ?onComplete:Response<EitherType<Message, Bool>>->Void):Void call(methodName(), params, onComplete);
 	public function getGameHighScores(params:GetGameHighScoresParams, ?onComplete:Response<Array<GameHighScore>>->Void):Void call(methodName(), params, onComplete);
@@ -204,6 +207,7 @@ typedef SendAudioParams = {
 	@:optional var duration:Int;
 	@:optional var performer:String;
 	@:optional var title:String;
+	@:optional var thumb:EitherType<InputFile, String>;
 	@:optional var disable_notification:Bool;
 	@:optional var reply_to_message_id:Int;
 	@:optional var reply_markup:EitherType<EitherType<EitherType<InlineKeyboardMarkup, ReplyKeyboardMarkup>, ReplyKeyboardRemove>, ForceReply>;
@@ -214,6 +218,7 @@ typedef SendDocumentParams = {
 
 	var chat_id:EitherType<Int, String>;
 	var document:EitherType<InputFile, String>;
+	@:optional var thumb:EitherType<InputFile, String>;
 	@:optional var caption:String;
 	@:optional var parse_mode:String;
 	@:optional var disable_notification:Bool;
@@ -229,9 +234,26 @@ typedef SendVideoParams = {
 	@:optional var duration:Int;
 	@:optional var width:Int;
 	@:optional var height:Int;
+	@:optional var thumb:EitherType<InputFile, String>;
 	@:optional var caption:String;
 	@:optional var parse_mode:String;
 	@:optional var supports_streaming:Bool;
+	@:optional var disable_notification:Bool;
+	@:optional var reply_to_message_id:Int;
+	@:optional var reply_markup:EitherType<EitherType<EitherType<InlineKeyboardMarkup, ReplyKeyboardMarkup>, ReplyKeyboardRemove>, ForceReply>;
+	
+}
+
+typedef SendAnimationParams = {
+
+	var chat_id:EitherType<Int, String>;
+	var animation:EitherType<InputFile, String>;
+	@:optional var duration:Int;
+	@:optional var width:Int;
+	@:optional var height:Int;
+	@:optional var thumb:EitherType<InputFile, String>;
+	@:optional var caption:String;
+	@:optional var parse_mode:String;
 	@:optional var disable_notification:Bool;
 	@:optional var reply_to_message_id:Int;
 	@:optional var reply_markup:EitherType<EitherType<EitherType<InlineKeyboardMarkup, ReplyKeyboardMarkup>, ReplyKeyboardRemove>, ForceReply>;
@@ -257,6 +279,7 @@ typedef SendVideoNoteParams = {
 	var video_note:EitherType<InputFile, String>;
 	@:optional var duration:Int;
 	@:optional var length:Int;
+	@:optional var thumb:EitherType<InputFile, String>;
 	@:optional var disable_notification:Bool;
 	@:optional var reply_to_message_id:Int;
 	@:optional var reply_markup:EitherType<EitherType<EitherType<InlineKeyboardMarkup, ReplyKeyboardMarkup>, ReplyKeyboardRemove>, ForceReply>;
@@ -266,7 +289,7 @@ typedef SendVideoNoteParams = {
 typedef SendMediaGroupParams = {
 
 	var chat_id:EitherType<Int, String>;
-	var media:Array<InputMedia>;
+	var media:Array<InputMediaVideo>;
 	@:optional var disable_notification:Bool;
 	@:optional var reply_to_message_id:Int;
 	
@@ -312,6 +335,7 @@ typedef SendVenueParams = {
 	var title:String;
 	var address:String;
 	@:optional var foursquare_id:String;
+	@:optional var foursquare_type:String;
 	@:optional var disable_notification:Bool;
 	@:optional var reply_to_message_id:Int;
 	@:optional var reply_markup:EitherType<EitherType<EitherType<InlineKeyboardMarkup, ReplyKeyboardMarkup>, ReplyKeyboardRemove>, ForceReply>;
@@ -324,6 +348,7 @@ typedef SendContactParams = {
 	var phone_number:String;
 	var first_name:String;
 	@:optional var last_name:String;
+	@:optional var vcard:String;
 	@:optional var disable_notification:Bool;
 	@:optional var reply_to_message_id:Int;
 	@:optional var reply_markup:EitherType<EitherType<EitherType<InlineKeyboardMarkup, ReplyKeyboardMarkup>, ReplyKeyboardRemove>, ForceReply>;
@@ -517,6 +542,16 @@ typedef EditMessageCaptionParams = {
 	
 }
 
+typedef EditMessageMediaParams = {
+
+	@:optional var chat_id:EitherType<Int, String>;
+	@:optional var message_id:Int;
+	@:optional var inline_message_id:String;
+	var media:InputMedia;
+	@:optional var reply_markup:InlineKeyboardMarkup;
+	
+}
+
 typedef EditMessageReplyMarkupParams = {
 
 	@:optional var chat_id:EitherType<Int, String>;
@@ -648,6 +683,13 @@ typedef AnswerPreCheckoutQueryParams = {
 	
 }
 
+typedef SetPassportDataErrorsParams = {
+
+	var user_id:Int;
+	var errors:Array<PassportElementError>;
+	
+}
+
 typedef SendGameParams = {
 
 	var chat_id:Int;
@@ -761,6 +803,7 @@ typedef Message = {
 	@:optional var caption_entities:Array<MessageEntity>;
 	@:optional var audio:Audio;
 	@:optional var document:Document;
+	@:optional var animation:Animation;
 	@:optional var game:Game;
 	@:optional var photo:Array<PhotoSize>;
 	@:optional var sticker:Sticker;
@@ -785,6 +828,7 @@ typedef Message = {
 	@:optional var invoice:Invoice;
 	@:optional var successful_payment:SuccessfulPayment;
 	@:optional var connected_website:String;
+	@:optional var passport_data:PassportData;
 	
 }
 
@@ -815,6 +859,7 @@ typedef Audio = {
 	@:optional var title:String;
 	@:optional var mime_type:String;
 	@:optional var file_size:Int;
+	@:optional var thumb:PhotoSize;
 	
 }
 
@@ -835,6 +880,19 @@ typedef Video = {
 	var height:Int;
 	var duration:Int;
 	@:optional var thumb:PhotoSize;
+	@:optional var mime_type:String;
+	@:optional var file_size:Int;
+	
+}
+
+typedef Animation = {
+
+	var file_id:String;
+	var width:Int;
+	var height:Int;
+	var duration:Int;
+	@:optional var thumb:PhotoSize;
+	@:optional var file_name:String;
 	@:optional var mime_type:String;
 	@:optional var file_size:Int;
 	
@@ -865,6 +923,7 @@ typedef Contact = {
 	var first_name:String;
 	@:optional var last_name:String;
 	@:optional var user_id:Int;
+	@:optional var vcard:String;
 	
 }
 
@@ -881,6 +940,7 @@ typedef Venue = {
 	var title:String;
 	var address:String;
 	@:optional var foursquare_id:String;
+	@:optional var foursquare_type:String;
 	
 }
 
@@ -1013,12 +1073,49 @@ typedef InputMediaVideo = {
 
 	var type:String;
 	var media:String;
+	@:optional var thumb:EitherType<InputFile, String>;
 	@:optional var caption:String;
 	@:optional var parse_mode:String;
 	@:optional var width:Int;
 	@:optional var height:Int;
 	@:optional var duration:Int;
 	@:optional var supports_streaming:Bool;
+	
+}
+
+typedef InputMediaAnimation = {
+
+	var type:String;
+	var media:String;
+	@:optional var thumb:EitherType<InputFile, String>;
+	@:optional var caption:String;
+	@:optional var parse_mode:String;
+	@:optional var width:Int;
+	@:optional var height:Int;
+	@:optional var duration:Int;
+	
+}
+
+typedef InputMediaAudio = {
+
+	var type:String;
+	var media:String;
+	@:optional var thumb:EitherType<InputFile, String>;
+	@:optional var caption:String;
+	@:optional var parse_mode:String;
+	@:optional var duration:Int;
+	@:optional var performer:String;
+	@:optional var title:String;
+	
+}
+
+typedef InputMediaDocument = {
+
+	var type:String;
+	var media:String;
+	@:optional var thumb:EitherType<InputFile, String>;
+	@:optional var caption:String;
+	@:optional var parse_mode:String;
 	
 }
 
@@ -1231,6 +1328,7 @@ typedef InlineQueryResultVenue = {
 	var title:String;
 	var address:String;
 	@:optional var foursquare_id:String;
+	@:optional var foursquare_type:String;
 	@:optional var reply_markup:InlineKeyboardMarkup;
 	@:optional var input_message_content:InputMessageContent;
 	@:optional var thumb_url:String;
@@ -1246,6 +1344,7 @@ typedef InlineQueryResultContact = {
 	var phone_number:String;
 	var first_name:String;
 	@:optional var last_name:String;
+	@:optional var vcard:String;
 	@:optional var reply_markup:InlineKeyboardMarkup;
 	@:optional var input_message_content:InputMessageContent;
 	@:optional var thumb_url:String;
@@ -1394,6 +1493,7 @@ typedef InputVenueMessageContent = {
 	var title:String;
 	var address:String;
 	@:optional var foursquare_id:String;
+	@:optional var foursquare_type:String;
 	
 }
 
@@ -1402,6 +1502,7 @@ typedef InputContactMessageContent = {
 	var phone_number:String;
 	var first_name:String;
 	@:optional var last_name:String;
+	@:optional var vcard:String;
 	
 }
 
@@ -1493,6 +1594,131 @@ typedef PreCheckoutQuery = {
 	
 }
 
+typedef PassportData = {
+
+	var data:Array<EncryptedPassportElement>;
+	var credentials:EncryptedCredentials;
+	
+}
+
+typedef PassportFile = {
+
+	var file_id:String;
+	var file_size:Int;
+	var file_date:Int;
+	
+}
+
+typedef EncryptedPassportElement = {
+
+	var type:String;
+	@:optional var data:String;
+	@:optional var phone_number:String;
+	@:optional var email:String;
+	@:optional var files:Array<PassportFile>;
+	@:optional var front_side:PassportFile;
+	@:optional var reverse_side:PassportFile;
+	@:optional var selfie:PassportFile;
+	@:optional var translation:Array<PassportFile>;
+	var hash:String;
+	
+}
+
+typedef EncryptedCredentials = {
+
+	var data:String;
+	var hash:String;
+	var secret:String;
+	
+}
+
+typedef PassportElementError = {
+
+	
+}
+
+typedef PassportElementErrorDataField = {
+
+	var source:String;
+	var type:String;
+	var field_name:String;
+	var data_hash:String;
+	var message:String;
+	
+}
+
+typedef PassportElementErrorFrontSide = {
+
+	var source:String;
+	var type:String;
+	var file_hash:String;
+	var message:String;
+	
+}
+
+typedef PassportElementErrorReverseSide = {
+
+	var source:String;
+	var type:String;
+	var file_hash:String;
+	var message:String;
+	
+}
+
+typedef PassportElementErrorSelfie = {
+
+	var source:String;
+	var type:String;
+	var file_hash:String;
+	var message:String;
+	
+}
+
+typedef PassportElementErrorFile = {
+
+	var source:String;
+	var type:String;
+	var file_hash:String;
+	var message:String;
+	
+}
+
+typedef PassportElementErrorFiles = {
+
+	var source:String;
+	var type:String;
+	var file_hashes:Array<String>;
+	var message:String;
+	
+}
+
+typedef PassportElementErrorTranslationFile = {
+
+	var source:String;
+	var type:String;
+	var file_hash:String;
+	var message:String;
+	
+}
+
+typedef PassportElementErrorTranslationFiles = {
+
+	var source:String;
+	var type:String;
+	var file_hashes:Array<String>;
+	var message:String;
+	
+}
+
+typedef PassportElementErrorUnspecified = {
+
+	var source:String;
+	var type:String;
+	var element_hash:String;
+	var message:String;
+	
+}
+
 typedef Game = {
 
 	var title:String;
@@ -1501,16 +1727,6 @@ typedef Game = {
 	@:optional var text:String;
 	@:optional var text_entities:Array<MessageEntity>;
 	@:optional var animation:Animation;
-	
-}
-
-typedef Animation = {
-
-	var file_id:String;
-	@:optional var thumb:PhotoSize;
-	@:optional var file_name:String;
-	@:optional var mime_type:String;
-	@:optional var file_size:Int;
 	
 }
 
